@@ -1,0 +1,24 @@
+mesh Th = square(50,50);
+
+//Definir el espacion funcional de prueba (H)
+fespace Vh(Th, P1);
+//Define la funcion u (solucion) y v (funcion de prueba)
+Vh u, v;
+
+//Funcion f (rhs)
+func f = sin(pi*x)*sin(pi*y);
+
+//Decirle a Freefem la forma variacional: a(u,v) = lv(f)
+//a(u,v) - lv(f) = 0
+
+//Solucion con elementos finitos:
+solve Poisson(u, v, solver=LU) =
+int2d(Th) (dx(u)*dx(v) + dy(u)*dy(v)) - int2d(Th) (f*v)
++ on(1,2,3,4, u=0); // Condicion de Frontera
+
+//Visualizacion
+plot(u);
+
+//verificacion
+cout << "verificando u(0.5,0.5) = " << u(0.5,0.5) << endl;
+cout << "verificando u(0.23,0.15) = " << u(0.235,0.15) << endl;
